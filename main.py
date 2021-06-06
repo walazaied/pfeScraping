@@ -1,5 +1,5 @@
 from Config_WTTJ import get_list, get_companie_name, update_jobs, update_companie, verif_companie
-
+from wttj import get_url,get_informations_companie,get_url_posts,get_information_post
 L = get_list()
 print(L.index({'url': "https://www.linkedin.com/company/2950921/"}))
 
