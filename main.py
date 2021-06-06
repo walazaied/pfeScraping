@@ -1,18 +1,9 @@
-from selenium import webdriver
-import pymongo
-from time import sleep
-from selenium.webdriver.chrome.options import Options
-from pymongo import MongoClient
-from difflib import SequenceMatcher
-
-
-from Config_WTTJ import get_list, get_companie_name , update_jobs , update_companie , verif_companie,verif_post
-from wttj import get_url, get_informations_companie, get_information_post, get_url_posts
+from Config_WTTJ import get_list, get_companie_name, update_jobs, update_companie, verif_companie
 
 L = get_list()
-print(L.index({'url': "https://www.linkedin.com/company/1292855/"}))
+print(L.index({'url': "https://www.linkedin.com/company/2950921/"}))
 
-for i in range(762, len(L)):
+for i in range(829, len(L)):
     print(L[i]['url'])
     isScraped = verif_companie(L[i]['url'])
     print('is scraped: ', isScraped)
