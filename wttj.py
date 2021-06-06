@@ -10,6 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from jobclassifier import get_result_classification
 
+
+
 options = Options()
 options.add_argument("enable-automation")
 options.add_argument("disable-infobars")
