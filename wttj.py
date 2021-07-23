@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from jobclassifier import get_result_classification
-
+from Config_WTTJ import get_list, get_companie_name, update_jobs, update_companie, verif_companie, verif_post
 
 
 options = Options()
@@ -23,7 +23,7 @@ def get_url(companie):
     url = "https://www.welcometothejungle.com/fr/companies?query=" + companie + "&page=1&aroundQuery="
     driver.get(url)
     sleep(30)
-    string = driver.find_element_by_css_selector('section[class="hdl9e2-6 MJQFe"]').find_element_by_css_selector('h2')
+    string = driver.find_element_by_css_selector('h2[class="hdl9e2-0 bNcmDq"]')
     result = str(string.text)
     href = ""
     if result[0] != '0':
@@ -175,7 +175,7 @@ def get_information_post(href, date_posting):
     sleep(10)
     post = driver.find_element_by_css_selector('h1[class="sc-12bzhsi-3 fhlSDH"]').text
     post_class = get_result_classification(post)
-    d = driver.find_element_by_css_selector('section[data-t="lzbv24"]').find_element_by_css_selector(
+    d = driver.find_element_by_css_selector('section[data-t="12p1z08"]').find_element_by_css_selector(
         'div[class="sc-11obzva-1 hWHArS"]')
     description_post = d.text
 
@@ -211,3 +211,47 @@ def get_information_post(href, date_posting):
         del dic['write']
 
     return dic
+
+if __name__ == '__main__':
+
+    L = get_list()
+
+    for i in range(0, len(L)):
+        print(L[i]['url'])
+        isScraped = verif_companie(L[i]['url'])
+        print('is scraped: ', isScraped)
+        if not isScraped:
+            name = get_companie_name(L[i]['url'])
+            if name is not None:
+                h = get_url(name)
+            if h != "":
+                k = {"name": name, "url_linkedin": L[i]['url']}
+                g = get_informations_companie(h)
+                k.update(g)
+                update_companie(k)
+                print(k)
+                n = {"name": name, "url_linkedin": L[i]['url']}
+                listp = get_url_posts(h)
+                print(listp)
+                for clé, valeur in listp.items():
+                    print(clé, valeur)
+                    j = get_information_post(clé, valeur)
+                    j.update(n)
+                    print(j)
+                    update_jobs(j)
+            else:
+                print(name, ':lentreprise nexiste pas')
+        elif isScraped:
+            name = get_companie_name(L[i]['url'])
+            h = get_url(name)
+            n = {"name": name, "url_linkedin": L[i]['url']}
+            g = get_informations_companie(h)
+            listp = get_url_posts(h)
+            print(listp)
+            for clé, valeur in listp.items():
+                result = verif_post(clé)
+                if (result is None) or (result is not None and result['posting_date'] != valeur):
+                    j = get_information_post(clé, valeur)
+                    j.update(n)
+                    print(j)
+                    update_jobs(j)
